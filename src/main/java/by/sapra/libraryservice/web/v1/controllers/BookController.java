@@ -37,6 +37,6 @@ public class BookController {
 
     @PostMapping
     public ResponseEntity<?> createNewBook() {
-        return ResponseEntity.status(HttpStatus.CREATED).body("");
+        return ResponseEntity.status(HttpStatus.CREATED).body("asd");
     }
 }

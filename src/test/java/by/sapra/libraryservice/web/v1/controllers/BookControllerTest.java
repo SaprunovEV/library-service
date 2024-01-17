@@ -126,6 +126,23 @@ class BookControllerTest {
                 .andExpect(status().isCreated());
     }
 
+    @Test
+    void whenCreateBook_thenReturnNotNullAndNotEmpty() throws Exception {
+        UpsertBookRequest request = UpsertBookRequestBuilder
+                .aUpsertBookRequest().build();
+
+        String actual = mvc.perform(
+                        post(baseUrl)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                .andReturn().getResponse().getContentAsString();
+
+        assertAll(() -> {
+            assertNotNull(actual, "не null");
+            assertFalse(actual.isEmpty(), "не пусто");
+        });
+    }
+
     private static BookResponse createBookResponse(WebBookFilter filter) {
         return BookResponseBuilder.aBookResponse()
                 .withAuthor(filter.getAuthor())
