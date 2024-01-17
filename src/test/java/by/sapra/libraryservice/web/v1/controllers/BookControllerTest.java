@@ -29,7 +29,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = BookController.class)
@@ -111,36 +110,7 @@ class BookControllerTest {
     }
 
     @Test
-    void whenCreateBook_thenReturnCreateStatus() throws Exception {
-        UpsertBookRequest request = UpsertBookRequestBuilder
-                .aUpsertBookRequest().build();
-
-        mvc.perform(
-                post(baseUrl)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andDo(print())
-                .andExpect(status().isCreated());
-    }
-
-    @Test
-    void whenCreateBook_thenReturnNotNullAndNotEmpty() throws Exception {
-        UpsertBookRequest request = UpsertBookRequestBuilder
-                .aUpsertBookRequest().build();
-
-        when(responseMapper.bookModelToResponse(any())).thenReturn(BookResponseBuilder.aBookResponse().build());
-
-        String actual = mvc.perform(
-                        post(baseUrl)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(request)))
-                .andReturn().getResponse().getContentAsString();
-
-        assertNotNullAndNotEmptyResponse(actual);
-    }
-
-    @Test
-    void whenCreateBook_thenCallServiceAndMapper() throws Exception {
+    void whenCreateBook_thenCallServiceAndMapper_andReturnCreatedStatus_andReturnNotNullAndNotEmptyResponse() throws Exception {
         UpsertBookRequest request = UpsertBookRequestBuilder
                 .aUpsertBookRequest().build();
 
@@ -153,11 +123,14 @@ class BookControllerTest {
         BookResponse response = BookResponseBuilder.aBookResponse().build();
         when(responseMapper.bookModelToResponse(book)).thenReturn(response);
 
-        mvc.perform(
+        String actual = mvc.perform(
                         post(baseUrl)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString();
+
+        assertNotNullAndNotEmptyResponse(actual);
 
         verify(responseMapper, times(1)).requestToBookModel(request);
         verify(service, times(1)).createBook(book2save);
