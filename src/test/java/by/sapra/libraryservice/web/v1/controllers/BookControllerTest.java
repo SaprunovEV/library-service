@@ -50,17 +50,11 @@ class BookControllerTest {
         serviceFilter.setTitle(filter.getTitle());
         when(webMapper.webFilterToServiceFilter(filter)).thenReturn(serviceFilter);
 
-        BookModel book = BookModelBuilder.aBook()
-                                .withAuthor(filter.getAuthor())
-                                .withTitle(filter.getTitle())
-                                .build();
+        BookModel book = createBookModel(filter);
         when(service.filterBook(serviceFilter)).thenReturn(book);
 
 
-        BookResponse response = BookResponseBuilder.aBookResponse()
-                                .withAuthor(filter.getAuthor())
-                                .withTitle(filter.getTitle())
-                                .build();
+        BookResponse response = createBookResponse(filter);
         when(responseMapper.bookModelToResponse(book)).thenReturn(response);
 
         mvc.perform(
@@ -74,5 +68,19 @@ class BookControllerTest {
         verify(webMapper, times(1)).webFilterToServiceFilter(filter);
         verify(service, times(1)).filterBook(serviceFilter);
         verify(responseMapper, times(1)).bookModelToResponse(book);
+    }
+
+    private static BookResponse createBookResponse(WebBookFilter filter) {
+        return BookResponseBuilder.aBookResponse()
+                .withAuthor(filter.getAuthor())
+                .withTitle(filter.getTitle())
+                .build();
+    }
+
+    private static BookModel createBookModel(WebBookFilter filter) {
+        return BookModelBuilder.aBook()
+                .withAuthor(filter.getAuthor())
+                .withTitle(filter.getTitle())
+                .build();
     }
 }
