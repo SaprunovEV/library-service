@@ -11,4 +11,6 @@ public interface BookService {
     List<BookModel> getBookByCategory(String categoryName);
 
     BookModel createBook(BookModel book2save);
+
+    BookModel updateBook(Integer id, BookModel book2update);
 }

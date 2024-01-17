@@ -27,8 +27,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = BookController.class)
@@ -134,6 +133,36 @@ class BookControllerTest {
 
         verify(responseMapper, times(1)).requestToBookModel(request);
         verify(service, times(1)).createBook(book2save);
+        verify(responseMapper, times(1)).bookModelToResponse(book);
+    }
+
+    @Test
+    void whenUpdateBook_thenCallMapperAndService() throws Exception {
+        int id = 1;
+
+        UpsertBookRequest request = UpsertBookRequestBuilder
+                .aUpsertBookRequest().build();
+
+        BookModel book2update = BookModelBuilder.aBook().withId(null).build();
+        when(responseMapper.requestToBookModel(request)).thenReturn(book2update);
+
+        BookModel book = BookModelBuilder.aBook().withId(id).build();
+        when(service.updateBook(id, book2update)).thenReturn(book);
+
+        BookResponse response = BookResponseBuilder.aBookResponse().build();
+        when(responseMapper.bookModelToResponse(book)).thenReturn(response);
+
+        String actual = mvc.perform(
+                        put(baseUrl + "/{id}", id)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        assertNotNullAndNotEmptyResponse(actual);
+
+        verify(responseMapper, times(1)).requestToBookModel(request);
+        verify(service, times(1)).updateBook(id, book2update);
         verify(responseMapper, times(1)).bookModelToResponse(book);
     }
 

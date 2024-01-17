@@ -4,6 +4,7 @@ import by.sapra.libraryservice.services.BookService;
 import by.sapra.libraryservice.web.v1.mappers.BookResponseMapper;
 import by.sapra.libraryservice.web.v1.mappers.WebFilterMapper;
 import by.sapra.libraryservice.web.v1.models.CategoryName;
+import by.sapra.libraryservice.web.v1.models.IdToUpdate;
 import by.sapra.libraryservice.web.v1.models.UpsertBookRequest;
 import by.sapra.libraryservice.web.v1.models.WebBookFilter;
 import lombok.RequiredArgsConstructor;
@@ -45,5 +46,12 @@ public class BookController {
                         )
                 )
         );
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateBook(IdToUpdate id, @RequestBody UpsertBookRequest request) {
+        return ResponseEntity.ok(
+                responseMapper.bookModelToResponse(
+                        service.updateBook(id.getId(), responseMapper.requestToBookModel(request))));
     }
 }
