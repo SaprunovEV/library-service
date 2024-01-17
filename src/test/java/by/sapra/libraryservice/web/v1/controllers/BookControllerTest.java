@@ -128,6 +128,8 @@ class BookControllerTest {
         UpsertBookRequest request = UpsertBookRequestBuilder
                 .aUpsertBookRequest().build();
 
+        when(responseMapper.bookModelToResponse(any())).thenReturn(BookResponseBuilder.aBookResponse().build());
+
         String actual = mvc.perform(
                         post(baseUrl)
                                 .contentType(MediaType.APPLICATION_JSON)
