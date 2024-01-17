@@ -40,20 +40,6 @@ class BookControllerTest {
     private String baseUrl;
 
     @Test
-    void whenFindBookByTitleAndAuthor_thenReturnOk() throws Exception {
-        WebBookFilter filter = new WebBookFilter();
-        filter.setAuthor("test_title");
-        filter.setTitle("test_author");
-
-        mvc.perform(
-                get(baseUrl)
-                        .param("title", filter.getTitle())
-                        .param("author", filter.getAuthor())
-                )
-                .andExpect(status().isOk());
-    }
-
-    @Test
     void whenFindByFilter_thenReturnResponse() throws Exception {
         WebBookFilter filter = new WebBookFilter();
         filter.setAuthor("test_title");
@@ -81,6 +67,7 @@ class BookControllerTest {
                         get(baseUrl)
                                 .param("title", filter.getTitle())
                                 .param("author", filter.getAuthor()))
+                .andExpect(status().isOk())
                 .andReturn().getResponse()
                 .getContentAsString();
 
