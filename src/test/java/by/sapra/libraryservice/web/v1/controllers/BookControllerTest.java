@@ -17,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -77,6 +78,20 @@ class BookControllerTest {
         mvc.perform(get(baseUrl + "/{name}", testName))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void whenFindByCategoryName_shouldNotReturnNullOreEmpty() throws Exception {
+        String testName = "test_category";
+
+        String actual = mvc.perform(get(baseUrl + "/{name}", testName))
+                .andReturn().getResponse()
+                .getContentAsString();
+
+        assertAll(() -> {
+            assertNotNull(actual, "не null");
+            assertFalse(actual.isEmpty(), "не пусто");
+        });
     }
 
     private static BookResponse createBookResponse(WebBookFilter filter) {
