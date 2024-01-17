@@ -17,6 +17,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -92,6 +94,30 @@ class BookControllerTest {
             assertNotNull(actual, "не null");
             assertFalse(actual.isEmpty(), "не пусто");
         });
+    }
+
+    @Test
+    void whenFindByCategoryName_thenCallServiceAndMapper() throws Exception {
+        String testName = "test_category";
+
+        List<BookModel> modelList = List.of(
+                BookModelBuilder.aBook().withId(1).build(),
+                BookModelBuilder.aBook().withId(2).build(),
+                BookModelBuilder.aBook().withId(3).build(),
+                BookModelBuilder.aBook().withId(4).build()
+        );
+        when(service.getBookByCategory(testName)).thenReturn(modelList);
+
+        BookListResponse listResponse = ListBookResponseBuilder.aListBookResponse().build();
+        when(responseMapper.bookModelListToListResponse(modelList))
+                .thenReturn(listResponse);
+
+        mvc.perform(get(baseUrl + "/{name}", testName))
+                .andReturn().getResponse()
+                .getContentAsString();
+
+        verify(service, times(1)).getBookByCategory(testName);
+        verify(responseMapper, times(1)).bookModelListToListResponse(modelList);
     }
 
     private static BookResponse createBookResponse(WebBookFilter filter) {
