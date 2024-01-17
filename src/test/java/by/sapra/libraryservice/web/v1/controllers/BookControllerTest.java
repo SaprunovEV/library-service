@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = BookController.class)
@@ -68,6 +69,14 @@ class BookControllerTest {
         verify(webMapper, times(1)).webFilterToServiceFilter(filter);
         verify(service, times(1)).filterBook(serviceFilter);
         verify(responseMapper, times(1)).bookModelToResponse(book);
+    }
+
+    @Test
+    void whenFindByCategoryName_thenReturnOk() throws Exception {
+        String testName = "test_category";
+        mvc.perform(get(baseUrl + "/{name}", testName))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
     private static BookResponse createBookResponse(WebBookFilter filter) {

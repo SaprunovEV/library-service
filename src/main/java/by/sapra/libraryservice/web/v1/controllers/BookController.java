@@ -3,10 +3,12 @@ package by.sapra.libraryservice.web.v1.controllers;
 import by.sapra.libraryservice.services.BookService;
 import by.sapra.libraryservice.web.v1.mappers.BookResponseMapper;
 import by.sapra.libraryservice.web.v1.mappers.WebFilterMapper;
+import by.sapra.libraryservice.web.v1.models.CategoryName;
 import by.sapra.libraryservice.web.v1.models.WebBookFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,5 +26,10 @@ public class BookController {
                         service.filterBook(
                                 filterMapper.webFilterToServiceFilter(filter)))
         );
+    }
+
+    @GetMapping("/{categoryName}")
+    public ResponseEntity<?> getBookByCategoryName(@PathVariable CategoryName categoryName) {
+        return ResponseEntity.ok("");
     }
 }
