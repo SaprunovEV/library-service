@@ -1,20 +1,21 @@
 package by.sapra.libraryservice.web.v1.controllers;
 
-import by.sapra.libraryservice.testUtils.StringTestUtils;
+import by.sapra.libraryservice.services.BookService;
+import by.sapra.libraryservice.services.model.BookModel;
+import by.sapra.libraryservice.services.model.ServiceFilter;
+import by.sapra.libraryservice.testUtils.builders.service.BookModelBuilder;
+import by.sapra.libraryservice.testUtils.builders.web.v1.BookResponseBuilder;
+import by.sapra.libraryservice.web.v1.mappers.BookResponseMapper;
+import by.sapra.libraryservice.web.v1.mappers.WebFilterMapper;
+import by.sapra.libraryservice.web.v1.models.BookResponse;
 import by.sapra.libraryservice.web.v1.models.WebBookFilter;
-import net.javacrumbs.jsonunit.JsonAssert;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.stream.Stream;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -53,7 +54,7 @@ class BookControllerTest {
     }
 
     @Test
-    void whenFindByFilter_thenReturnResponse(Integer id) throws Exception {
+    void whenFindByFilter_thenReturnResponse() throws Exception {
         WebBookFilter filter = new WebBookFilter();
         filter.setAuthor("test_title");
         filter.setTitle("test_author");
@@ -64,8 +65,8 @@ class BookControllerTest {
         when(webMapper.webFilterToServiceFilter(filter)).thenReturn(serviceFilter);
 
         BookModel book = BookModelBuilder.aBook()
-                                .withAuthor(filter.getTitle())
-                                .withTitle(filter.getAuthor())
+                                .withAuthor(filter.getAuthor())
+                                .withTitle(filter.getTitle())
                                 .build();
         when(service.filterBook(serviceFilter)).thenReturn(book);
 
