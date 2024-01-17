@@ -166,6 +166,16 @@ class BookControllerTest {
         verify(responseMapper, times(1)).bookModelToResponse(book);
     }
 
+    @Test
+    void whenDeleteBook_thenReturnNoContent_andCallDeleteMethod() throws Exception {
+        int id = 1;
+
+        mvc.perform(delete(baseUrl + "/{id}", id))
+                .andExpect(status().isNoContent());
+
+        verify(service, times(1)).deleteBook(id);
+    }
+
     private static void assertNotNullAndNotEmptyResponse(String actual) {
         assertAll(() -> {
             assertNotNull(actual, "не null");

@@ -54,4 +54,10 @@ public class BookController {
                 responseMapper.bookModelToResponse(
                         service.updateBook(id.getId(), responseMapper.requestToBookModel(request))));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBook(IdToUpdate id) {
+        service.deleteBook(id.getId());
+        return ResponseEntity.noContent().build();
+    }
 }

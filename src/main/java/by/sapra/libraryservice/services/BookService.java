@@ -13,4 +13,6 @@ public interface BookService {
     BookModel createBook(BookModel book2save);
 
     BookModel updateBook(Integer id, BookModel book2update);
+
+    void deleteBook(Integer id);
 }
