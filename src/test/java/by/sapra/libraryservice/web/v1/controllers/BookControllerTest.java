@@ -3,6 +3,7 @@ package by.sapra.libraryservice.web.v1.controllers;
 import by.sapra.libraryservice.services.BookService;
 import by.sapra.libraryservice.services.model.BookModel;
 import by.sapra.libraryservice.services.model.ServiceFilter;
+import by.sapra.libraryservice.testUtils.UpsertBookRequestBuilder;
 import by.sapra.libraryservice.testUtils.builders.service.BookModelBuilder;
 import by.sapra.libraryservice.testUtils.builders.web.v1.BookResponseBuilder;
 import by.sapra.libraryservice.testUtils.builders.web.v1.ListBookResponseBuilder;
@@ -10,12 +11,15 @@ import by.sapra.libraryservice.web.v1.mappers.BookResponseMapper;
 import by.sapra.libraryservice.web.v1.mappers.WebFilterMapper;
 import by.sapra.libraryservice.web.v1.models.BookListResponse;
 import by.sapra.libraryservice.web.v1.models.BookResponse;
+import by.sapra.libraryservice.web.v1.models.UpsertBookRequest;
 import by.sapra.libraryservice.web.v1.models.WebBookFilter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -24,6 +28,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = BookController.class)
@@ -31,6 +37,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class BookControllerTest {
     @Autowired
     private MockMvc mvc;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private WebFilterMapper webMapper;
@@ -103,6 +111,19 @@ class BookControllerTest {
 
         verify(service, times(1)).getBookByCategory(testName);
         verify(responseMapper, times(1)).bookModelListToListResponse(modelList);
+    }
+
+    @Test
+    void whenCreateBook_thenReturnCreateStatus() throws Exception {
+        UpsertBookRequest request = UpsertBookRequestBuilder
+                .aUpsertBookRequest().build();
+
+        mvc.perform(
+                post(baseUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
+                .andExpect(status().isCreated());
     }
 
     private static BookResponse createBookResponse(WebBookFilter filter) {
