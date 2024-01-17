@@ -4,6 +4,7 @@ import by.sapra.libraryservice.services.BookService;
 import by.sapra.libraryservice.web.v1.mappers.BookResponseMapper;
 import by.sapra.libraryservice.web.v1.mappers.WebFilterMapper;
 import by.sapra.libraryservice.web.v1.models.CategoryName;
+import by.sapra.libraryservice.web.v1.models.UpsertBookRequest;
 import by.sapra.libraryservice.web.v1.models.WebBookFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -36,7 +37,13 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createNewBook() {
-        return ResponseEntity.status(HttpStatus.CREATED).body("asd");
+    public ResponseEntity<?> createNewBook(@RequestBody UpsertBookRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                responseMapper.bookModelToResponse(
+                        service.createBook(
+                                responseMapper.requestToBookModel(request)
+                        )
+                )
+        );
     }
 }
