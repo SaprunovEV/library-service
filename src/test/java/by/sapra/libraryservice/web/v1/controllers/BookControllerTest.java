@@ -104,10 +104,7 @@ class BookControllerTest {
                 .andReturn().getResponse()
                 .getContentAsString();
 
-        assertAll(() -> {
-            assertNotNull(actual, "не null");
-            assertFalse(actual.isEmpty(), "не пусто");
-        });
+        assertNotNullAndNotEmptyResponse(actual);
 
         verify(service, times(1)).getBookByCategory(testName);
         verify(responseMapper, times(1)).bookModelListToListResponse(modelList);
@@ -137,6 +134,10 @@ class BookControllerTest {
                                 .content(objectMapper.writeValueAsString(request)))
                 .andReturn().getResponse().getContentAsString();
 
+        assertNotNullAndNotEmptyResponse(actual);
+    }
+
+    private static void assertNotNullAndNotEmptyResponse(String actual) {
         assertAll(() -> {
             assertNotNull(actual, "не null");
             assertFalse(actual.isEmpty(), "не пусто");
