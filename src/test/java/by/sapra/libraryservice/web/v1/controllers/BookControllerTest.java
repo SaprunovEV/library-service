@@ -88,6 +88,8 @@ class BookControllerTest {
     void whenFindByCategoryName_shouldNotReturnNullOreEmpty() throws Exception {
         String testName = "test_category";
 
+        when(responseMapper.bookModelListToListResponse(anyList())).thenReturn(ListBookResponseBuilder.aListBookResponse().build());
+
         String actual = mvc.perform(get(baseUrl + "/{name}", testName))
                 .andReturn().getResponse()
                 .getContentAsString();

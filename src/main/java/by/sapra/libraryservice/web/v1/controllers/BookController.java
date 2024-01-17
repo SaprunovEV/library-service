@@ -30,6 +30,10 @@ public class BookController {
 
     @GetMapping("/{categoryName}")
     public ResponseEntity<?> getBookByCategoryName(@PathVariable CategoryName categoryName) {
-        return ResponseEntity.ok("asd");
+        return ResponseEntity.ok(
+                responseMapper
+                        .bookModelListToListResponse(
+                                service.getBookByCategory(categoryName.getCategoryName()))
+        );
     }
 }
