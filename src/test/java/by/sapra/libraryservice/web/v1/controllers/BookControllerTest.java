@@ -137,6 +137,31 @@ class BookControllerTest {
         assertNotNullAndNotEmptyResponse(actual);
     }
 
+    @Test
+    void whenCreateBook_thenCallServiceAndMapper() throws Exception {
+        UpsertBookRequest request = UpsertBookRequestBuilder
+                .aUpsertBookRequest().build();
+
+        BookModel book2save = BookModelBuilder.aBook().build();
+        when(responseMapper.requestToBookModel(request)).thenReturn(book2save);
+
+        BookModel book = BookModelBuilder.aBook().withId(1).build();
+        when(service.createBook(book2save)).thenReturn(book);
+
+        BookResponse response = BookResponseBuilder.aBookResponse().build();
+        when(responseMapper.bookModelToResponse(book)).thenReturn(response);
+
+        mvc.perform(
+                        post(baseUrl)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                .andReturn().getResponse().getContentAsString();
+
+        verify(responseMapper, times(1)).requestToBookModel(request);
+        verify(service, times(1)).createBook(book2save);
+        verify(responseMapper, times(1)).bookModelToResponse(book);
+    }
+
     private static void assertNotNullAndNotEmptyResponse(String actual) {
         assertAll(() -> {
             assertNotNull(actual, "не null");

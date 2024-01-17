@@ -9,4 +9,6 @@ public interface BookService {
     BookModel filterBook(ServiceFilter filter);
 
     List<BookModel> getBookByCategory(String categoryName);
+
+    BookModel createBook(BookModel book2save);
 }
