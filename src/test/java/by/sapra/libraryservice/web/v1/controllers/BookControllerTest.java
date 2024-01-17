@@ -3,9 +3,9 @@ package by.sapra.libraryservice.web.v1.controllers;
 import by.sapra.libraryservice.services.BookService;
 import by.sapra.libraryservice.services.model.BookModel;
 import by.sapra.libraryservice.services.model.ServiceFilter;
-import by.sapra.libraryservice.testUtils.builders.web.v1.ListBookResponseBuilder;
 import by.sapra.libraryservice.testUtils.builders.service.BookModelBuilder;
 import by.sapra.libraryservice.testUtils.builders.web.v1.BookResponseBuilder;
+import by.sapra.libraryservice.testUtils.builders.web.v1.ListBookResponseBuilder;
 import by.sapra.libraryservice.web.v1.mappers.BookResponseMapper;
 import by.sapra.libraryservice.web.v1.mappers.WebFilterMapper;
 import by.sapra.libraryservice.web.v1.models.BookListResponse;
@@ -23,8 +23,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = BookController.class)
@@ -77,30 +76,6 @@ class BookControllerTest {
     }
 
     @Test
-    void whenFindByCategoryName_thenReturnOk() throws Exception {
-        String testName = "test_category";
-        mvc.perform(get(baseUrl + "/{name}", testName))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void whenFindByCategoryName_shouldNotReturnNullOreEmpty() throws Exception {
-        String testName = "test_category";
-
-        when(responseMapper.bookModelListToListResponse(anyList())).thenReturn(ListBookResponseBuilder.aListBookResponse().build());
-
-        String actual = mvc.perform(get(baseUrl + "/{name}", testName))
-                .andReturn().getResponse()
-                .getContentAsString();
-
-        assertAll(() -> {
-            assertNotNull(actual, "не null");
-            assertFalse(actual.isEmpty(), "не пусто");
-        });
-    }
-
-    @Test
     void whenFindByCategoryName_thenCallServiceAndMapper() throws Exception {
         String testName = "test_category";
 
@@ -116,9 +91,15 @@ class BookControllerTest {
         when(responseMapper.bookModelListToListResponse(modelList))
                 .thenReturn(listResponse);
 
-        mvc.perform(get(baseUrl + "/{name}", testName))
+        String actual = mvc.perform(get(baseUrl + "/{name}", testName))
+                .andExpect(status().isOk())
                 .andReturn().getResponse()
                 .getContentAsString();
+
+        assertAll(() -> {
+            assertNotNull(actual, "не null");
+            assertFalse(actual.isEmpty(), "не пусто");
+        });
 
         verify(service, times(1)).getBookByCategory(testName);
         verify(responseMapper, times(1)).bookModelListToListResponse(modelList);
