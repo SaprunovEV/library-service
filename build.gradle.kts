@@ -22,18 +22,18 @@ repositories {
 }
 
 dependencies {
-//	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 //	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	compileOnly("org.projectlombok:lombok")
-//	runtimeOnly("org.postgresql:postgresql")
+	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("net.javacrumbs.json-unit:json-unit:2.38.0")
-//	testImplementation("org.springframework.boot:spring-boot-testcontainers")
+	testImplementation("org.springframework.boot:spring-boot-testcontainers")
 //	testImplementation("org.testcontainers:junit-jupiter")
-//	testImplementation("org.testcontainers:postgresql")
+	testImplementation("org.testcontainers:postgresql")
 }
 
 tasks.withType<Test> {
