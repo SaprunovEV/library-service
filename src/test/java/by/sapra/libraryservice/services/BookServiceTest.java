@@ -53,4 +53,21 @@ class BookServiceTest extends AbstractDataTest {
 
         verify(mapper, times(1)).entityToModel(eq(entity));
     }
+
+    @Test
+    void whenFilterBookNotFound_thenReturnModel() throws Exception {
+        BookEntity entity = aBookEntity().build();
+
+        ServiceFilter filter = new ServiceFilter();
+        filter.setTitle(entity.getTitle());
+        filter.setAuthor(entity.getAuthor());
+
+        BookModel actual = service.filterBook(filter);
+
+        assertAll(() -> {
+            assertNull(actual);
+        });
+
+        verify(mapper, times(0)).entityToModel(eq(entity));
+    }
 }
