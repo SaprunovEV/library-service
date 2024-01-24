@@ -1,0 +1,20 @@
+package by.sapra.libraryservice.models;
+
+import jakarta.persistence.*;
+import lombok.Data;
+
+@Entity
+@Data
+@Table(name = "book")
+public class BookEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    private String title;
+    private String author;
+
+    @ManyToOne
+    private CategoryEntity categoryEntity;
+}
