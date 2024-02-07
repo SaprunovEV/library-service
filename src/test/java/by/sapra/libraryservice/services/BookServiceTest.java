@@ -2,9 +2,11 @@ package by.sapra.libraryservice.services;
 
 import by.sapra.libraryservice.config.AbstractDataTest;
 import by.sapra.libraryservice.models.BookEntity;
+import by.sapra.libraryservice.models.CategoryEntity;
 import by.sapra.libraryservice.services.mappers.BookServiceMapper;
 import by.sapra.libraryservice.services.model.BookModel;
 import by.sapra.libraryservice.services.model.ServiceFilter;
+import by.sapra.libraryservice.testUtils.builders.TestDataBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 
 import static by.sapra.libraryservice.testUtils.builders.models.BookEntityTestDataBuilder.aBookEntity;
+import static by.sapra.libraryservice.testUtils.builders.models.CategoryEntityTestDataBuilder.aCategoryEntity;
 import static by.sapra.libraryservice.testUtils.builders.service.BookModelBuilder.aBook;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
@@ -30,7 +33,8 @@ class BookServiceTest extends AbstractDataTest {
 
     @Test
     void whenFilterBook_thenReturnModel() throws Exception {
-        BookEntity entity = getFacade().save(aBookEntity());
+        TestDataBuilder<CategoryEntity> cB = getFacade().persistedOnce(aCategoryEntity());
+        BookEntity entity = getFacade().save(aBookEntity().withCategory(cB));
 
         ServiceFilter filter = new ServiceFilter();
         filter.setTitle(entity.getTitle());
@@ -56,7 +60,8 @@ class BookServiceTest extends AbstractDataTest {
 
     @Test
     void whenFilterBookNotFound_thenReturnModel() throws Exception {
-        BookEntity entity = aBookEntity().build();
+        TestDataBuilder<CategoryEntity> cB = getFacade().persistedOnce(aCategoryEntity());
+        BookEntity entity = aBookEntity().withCategory(cB).build();
 
         ServiceFilter filter = new ServiceFilter();
         filter.setTitle(entity.getTitle());
@@ -70,4 +75,6 @@ class BookServiceTest extends AbstractDataTest {
 
         verify(mapper, times(0)).entityToModel(eq(entity));
     }
+
+
 }
