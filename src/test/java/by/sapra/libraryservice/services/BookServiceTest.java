@@ -7,12 +7,16 @@ import by.sapra.libraryservice.services.mappers.BookServiceMapper;
 import by.sapra.libraryservice.services.model.BookModel;
 import by.sapra.libraryservice.services.model.ServiceFilter;
 import by.sapra.libraryservice.testUtils.builders.TestDataBuilder;
+import by.sapra.libraryservice.testUtils.builders.models.BookEntityTestDataBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static by.sapra.libraryservice.testUtils.builders.models.BookEntityTestDataBuilder.aBookEntity;
 import static by.sapra.libraryservice.testUtils.builders.models.CategoryEntityTestDataBuilder.aCategoryEntity;
@@ -76,5 +80,36 @@ class BookServiceTest extends AbstractDataTest {
         verify(mapper, times(0)).entityToModel(eq(entity));
     }
 
+    @Test
+    void whenGetBookByCategory_thenReturnCollectionOfBooks() throws Exception {
 
+        TestDataBuilder<CategoryEntity> persistedCategory = getFacade().persistedOnce(aCategoryEntity());
+        TestDataBuilder<CategoryEntity> anotherCategory = getFacade().persistedOnce(aCategoryEntity().withName("not"));
+
+        List<BookEntityTestDataBuilder> bookEntityTestDataBuilders = List.of(
+                aBookEntity().withTitle("test_1").withCategory(persistedCategory),
+                aBookEntity().withTitle("test_2").withCategory(persistedCategory),
+                aBookEntity().withTitle("test_3").withCategory(persistedCategory),
+                aBookEntity().withTitle("test_4").withCategory(persistedCategory),
+                aBookEntity().withTitle("test_0").withCategory(anotherCategory)
+        );
+        bookEntityTestDataBuilders.forEach(b -> getFacade().save(b));
+
+        CategoryEntity entity = getFacade().find(persistedCategory.build().getId(), CategoryEntity.class);
+
+        List<BookModel> expected = entity.getBooks().stream()
+                .map(b -> aBook().withTitle(b.getTitle()).withId(b.getId()).withAuthor(b.getAuthor()).build()).toList();
+        when(mapper.entityListToBookModelList(new ArrayList<>(entity.getBooks())))
+                .thenReturn(expected);
+
+        List<BookModel> actual = service.getBookByCategory(entity.getName());
+
+        assertAll(() -> {
+            assertNotNull(actual, "не ноль");
+            assertEquals(entity.getBooks().size(), actual.size(), "одинаковое количество");
+            expected.forEach(book -> assertTrue(actual.contains(book)));
+        });
+
+        verify(mapper, times(1)).entityListToBookModelList(new ArrayList<>(entity.getBooks()));
+    }
 }
