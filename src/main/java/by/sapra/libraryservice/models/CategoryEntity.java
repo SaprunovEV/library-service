@@ -13,6 +13,8 @@ public class CategoryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private String name;
+
     @OneToMany
     private List<BookEntity> books;
 }
