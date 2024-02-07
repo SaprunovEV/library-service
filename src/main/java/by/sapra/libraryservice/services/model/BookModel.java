@@ -7,4 +7,5 @@ public class BookModel {
     private Integer id;
     private String title;
     private String author;
+    private Integer categoryId;
 }
