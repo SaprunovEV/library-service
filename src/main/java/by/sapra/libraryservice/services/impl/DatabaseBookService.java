@@ -31,7 +31,7 @@ public class DatabaseBookService implements BookService {
 
     @Override
     public List<BookModel> getBookByCategory(String categoryName) {
-        return null;
+        return mapper.entityListToBookModelList(repository.findByCategoryEntity_Name(categoryName));
     }
 
     @Override
