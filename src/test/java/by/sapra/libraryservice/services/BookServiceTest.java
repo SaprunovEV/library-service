@@ -128,4 +128,35 @@ class BookServiceTest extends AbstractDataTest {
 
         verify(mapper, times(1)).entityListToBookModelList(books);
     }
+
+    @Test
+    void whenCreateBook_thenNewBookWillBeSaved() throws Exception {
+        TestDataBuilder<CategoryEntity> cBuilder = getFacade().persistedOnce(aCategoryEntity());
+        String author = "author";
+        String title = "title";
+        BookModel book2author = aBook().withAuthor(author).withTitle(title).withCategoryId(cBuilder.build().getId()).build();
+
+        BookEntity entity2save = aBookEntity().withAuthor(author).withTitle(title).withCategory(cBuilder).build();
+
+        when(mapper.modelToEntity(book2author))
+                .thenReturn(entity2save);
+
+        BookModel build = aBook().withTitle(title).withAuthor(author).build();
+        when(mapper.entityToModel(any())).thenReturn(build);
+
+        BookModel actual = service.createBook(book2author);
+
+        BookEntity expectedEntity = getFacade().find(entity2save.getId(), BookEntity.class);
+
+        assertAll(() -> {
+            assertNotNull(actual);
+            assertNotNull(expectedEntity);
+            assertEquals(expectedEntity.getAuthor(), author);
+            assertEquals(expectedEntity.getTitle(), title);
+            assertEquals(expectedEntity.getCategoryEntity().getId(), cBuilder.build().getId());
+        });
+
+        verify(mapper, times(1)).modelToEntity(book2author);
+        verify(mapper, times(1)).entityToModel(expectedEntity);
+    }
 }

@@ -36,7 +36,8 @@ public class DatabaseBookService implements BookService {
 
     @Override
     public BookModel createBook(BookModel book2save) {
-        return null;
+        BookEntity savedEntity = repository.save(mapper.modelToEntity(book2save));
+        return mapper.entityToModel(savedEntity);
     }
 
     @Override
