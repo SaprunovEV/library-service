@@ -112,4 +112,20 @@ class BookServiceTest extends AbstractDataTest {
 
         verify(mapper, times(1)).entityListToBookModelList(new ArrayList<>(entity.getBooks()));
     }
+
+    @Test
+    void  whenGetBookByCategoryNotFound_thenReturnEmptyCollectionOfBooks() throws Exception {
+        ArrayList<BookEntity> books = new ArrayList<>();
+        when(mapper.entityListToBookModelList(books))
+                .thenReturn(new ArrayList<>());
+
+        List<BookModel> actual = service.getBookByCategory("test");
+
+        assertAll(() -> {
+            assertNotNull(actual, "не ноль");
+            assertTrue(actual.isEmpty());
+        });
+
+        verify(mapper, times(1)).entityListToBookModelList(books);
+    }
 }
