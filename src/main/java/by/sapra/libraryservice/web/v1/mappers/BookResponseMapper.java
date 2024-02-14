@@ -15,7 +15,9 @@ public interface BookResponseMapper {
     BookResponse bookModelToResponse(BookModel bookModel);
 
     default BookListResponse bookModelListToListResponse(List<BookModel> modelList) {
-        return null;
+        BookListResponse result = new BookListResponse();
+        result.setBooks(modelList.stream().map(this::bookModelToResponse).toList());
+        return result;
     }
 
     BookModel requestToBookModel(UpsertBookRequest request);
