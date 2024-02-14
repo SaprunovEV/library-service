@@ -3,6 +3,7 @@ package by.sapra.libraryservice.services;
 import by.sapra.libraryservice.config.AbstractDataTest;
 import by.sapra.libraryservice.models.BookEntity;
 import by.sapra.libraryservice.models.CategoryEntity;
+import by.sapra.libraryservice.services.exceptions.BookNotFoundException;
 import by.sapra.libraryservice.services.mappers.BookServiceMapper;
 import by.sapra.libraryservice.services.model.BookModel;
 import by.sapra.libraryservice.services.model.ServiceFilter;
@@ -157,6 +158,54 @@ class BookServiceTest extends AbstractDataTest {
         });
 
         verify(mapper, times(1)).modelToEntity(book2author);
+        verify(mapper, times(1)).entityToModel(expectedEntity);
+    }
+
+    @Test
+    void whenUpdateNonExistentBook_theThrowException() throws Exception {
+        assertThrows(BookNotFoundException.class, () -> {service.updateBook(123, aBook().build());});
+    }
+
+    @Test
+    void whenUpdateEntity_thenUpdateEntityToDatabase() throws Exception {
+        TestDataBuilder<CategoryEntity> cBuilder = getFacade().persistedOnce(aCategoryEntity());
+        String author = "author";
+        String title = "title";
+
+        BookEntity entity2update = getFacade().save(aBookEntity().withCategory(cBuilder));
+
+        Integer id = entity2update.getId();
+
+        BookModel model2update = aBook().withAuthor(author).withTitle(title).withCategoryId(cBuilder.build().getId()).build();
+
+        BookEntity entityFromMapper = aBookEntity().withCategory(cBuilder).withTitle(title).withAuthor(author).build();
+        when(mapper.modelToEntity(model2update))
+                .thenReturn(entityFromMapper);
+
+        BookModel build = aBook()
+                .withId(id)
+                .withTitle(title)
+                .withAuthor(author)
+                .withCategoryId(
+                        cBuilder.build()
+                                .getId())
+                .build();
+        when(mapper.entityToModel(any())).thenReturn(build);
+
+        BookModel actual = service.updateBook(id, model2update);
+
+        BookEntity expectedEntity = getFacade().find(id, BookEntity.class);
+
+        assertAll(() -> {
+            assertNotNull(actual);
+            assertNotNull(expectedEntity);
+            assertEquals(id, actual.getId());
+            assertEquals(author, expectedEntity.getAuthor());
+            assertEquals(title, expectedEntity.getTitle());
+            assertEquals(expectedEntity.getCategoryEntity().getId(), cBuilder.build().getId());
+        });
+
+        verify(mapper, times(1)).modelToEntity(model2update);
         verify(mapper, times(1)).entityToModel(expectedEntity);
     }
 }
