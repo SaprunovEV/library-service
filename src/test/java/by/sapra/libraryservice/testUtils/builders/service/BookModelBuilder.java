@@ -27,7 +27,7 @@ public class BookModelBuilder implements TestDataBuilder<BookModel> {
     }
 
     public BookModelBuilder withTitle(String title) {
-        return this.title == title ? this : new BookModelBuilder(id, author, title, categoryId);
+        return this.title == title ? this : new BookModelBuilder(id, title, author, categoryId);
     }
 
     public BookModelBuilder withId(Integer id) {
@@ -41,6 +41,7 @@ public class BookModelBuilder implements TestDataBuilder<BookModel> {
     @Override
     public BookModel build() {
         BookModel result = new BookModel();
+        result.setId(id);
         result.setAuthor(author);
         result.setTitle(title);
         result.setCategoryId(categoryId);

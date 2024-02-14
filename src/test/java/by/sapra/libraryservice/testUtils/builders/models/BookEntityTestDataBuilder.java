@@ -27,11 +27,11 @@ public class BookEntityTestDataBuilder implements TestDataBuilder<BookEntity> {
     }
 
     public BookEntityTestDataBuilder withTitle(String title) {
-        return this.title == title ? this : new BookEntityTestDataBuilder(author, title, category);
+        return this.title == title ? this : new BookEntityTestDataBuilder(title, author, category);
     }
 
     public BookEntityTestDataBuilder withCategory(TestDataBuilder<CategoryEntity> category) {
-        return this.category == category ? this : new BookEntityTestDataBuilder(author, title, category);
+        return this.category == category ? this : new BookEntityTestDataBuilder(title, author, category);
     }
     
     
