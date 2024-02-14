@@ -1,9 +1,9 @@
 package by.sapra.libraryservice.web.v1.mappers;
 
 import by.sapra.libraryservice.services.model.BookModel;
-import by.sapra.libraryservice.testUtils.builders.service.BookModelBuilder;
 import by.sapra.libraryservice.web.v1.models.BookListResponse;
 import by.sapra.libraryservice.web.v1.models.BookResponse;
+import by.sapra.libraryservice.web.v1.models.UpsertBookRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +46,23 @@ class BookResponseMapperTest {
             for (int i = 0; i < expected.size(); i++) {
                 assertBookResponse(expected.get(i), actual.getBooks().get(i));
             }
+        });
+    }
+
+    @Test
+    void shouldMapRequestToModel() throws Exception {
+        UpsertBookRequest expected = new UpsertBookRequest();
+        expected.setCategoryId(1);
+        expected.setTitle("title");
+        expected.setAuthor("author");
+
+        BookModel actual = mapper.requestToBookModel(expected);
+
+        assertAll(() -> {
+            assertNotNull(actual);
+            assertEquals(expected.getCategoryId(), actual.getCategoryId());
+            assertEquals(expected.getTitle(), actual.getTitle());
+            assertEquals(expected.getAuthor(), actual.getAuthor());
         });
     }
 
