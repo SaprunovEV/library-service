@@ -208,4 +208,17 @@ class BookServiceTest extends AbstractDataTest {
         verify(mapper, times(1)).modelToEntity(model2update);
         verify(mapper, times(1)).entityToModel(expectedEntity);
     }
+
+    @Test
+    void whenDeleteBook_thenDeleteBookFromDb() throws Exception {
+        BookEntity book2delete = getFacade().save(
+                aBookEntity()
+                        .withCategory(getFacade().persistedOnce(aCategoryEntity()))
+        );
+
+        Integer id2delete = book2delete.getId();
+        service.deleteBook(id2delete);
+
+        assertNull(getFacade().find(id2delete, BookEntity.class));
+    }
 }

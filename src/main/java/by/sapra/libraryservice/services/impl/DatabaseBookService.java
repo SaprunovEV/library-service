@@ -65,6 +65,6 @@ public class DatabaseBookService implements BookService {
 
     @Override
     public void deleteBook(Integer id) {
-
+        repository.deleteById(id);
     }
 }
