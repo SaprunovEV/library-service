@@ -422,18 +422,4 @@ class BookControllerTest {
             assertFalse(actual.isEmpty(), "не пусто");
         });
     }
-
-    private static BookResponse createBookResponse(WebBookFilter filter) {
-        return BookResponseBuilder.aBookResponse()
-                .withAuthor(filter.getAuthor())
-                .withTitle(filter.getTitle())
-                .build();
-    }
-
-    private static BookModel createBookModel(WebBookFilter filter) {
-        return BookModelBuilder.aBook()
-                .withAuthor(filter.getAuthor())
-                .withTitle(filter.getTitle())
-                .build();
-    }
 }
