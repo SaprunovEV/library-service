@@ -23,7 +23,7 @@ public class BookController {
     @GetMapping
     public ResponseEntity<?> getBookByAuthorAndTitle(WebBookFilter filter) {
         return ResponseEntity.ok(
-                responseMapper.bookModelToResponse(
+                responseMapper.bookModelListToListResponse(
                         service.filterBook(
                                 filterMapper.webFilterToServiceFilter(filter)))
         );
