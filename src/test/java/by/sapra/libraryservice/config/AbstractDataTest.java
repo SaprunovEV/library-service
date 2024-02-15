@@ -2,17 +2,14 @@ package by.sapra.libraryservice.config;
 
 import by.sapra.libraryservice.testUtils.TestDbFacade;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
-
-import java.util.function.Supplier;
 
 @ContextConfiguration(classes = AbstractDataConfig.class)
 public class AbstractDataTest {
@@ -41,6 +38,11 @@ public class AbstractDataTest {
         registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
         registry.add("spring.jpa.generate-ddl", () -> true);
         registry.add("spring.datasource.driver-class-name",() -> postgreSQLContainer.getDriverClassName());
+    }
+
+    @AfterEach
+    void tearDown() {
+        facade.cleanDatabase();
     }
 
     @BeforeAll
