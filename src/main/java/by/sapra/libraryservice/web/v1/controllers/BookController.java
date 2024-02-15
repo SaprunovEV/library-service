@@ -57,7 +57,7 @@ public class BookController {
 
     @PutMapping("/{id}")
     @UpdateBookDock
-    public ResponseEntity<?> updateBook(BookId id, @RequestBody @Valid UpsertBookRequest request) {
+    public ResponseEntity<?> updateBook(@Valid BookId id, @RequestBody @Valid UpsertBookRequest request) {
         return ResponseEntity.ok(
                 responseMapper.bookModelToResponse(
                         service.updateBook(id.getId(), responseMapper.requestToBookModel(request))));
@@ -65,7 +65,7 @@ public class BookController {
 
     @DeleteMapping("/{id}")
     @DeleteBookDock
-    public ResponseEntity<Void> deleteBook(BookId id) {
+    public ResponseEntity<Void> deleteBook(@Valid BookId id) {
         service.deleteBook(id.getId());
         return ResponseEntity.noContent().build();
     }
