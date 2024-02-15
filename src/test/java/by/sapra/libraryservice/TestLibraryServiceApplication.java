@@ -14,7 +14,7 @@ public class TestLibraryServiceApplication {
     @Bean
     @ServiceConnection
     PostgreSQLContainer<?> postgresContainer() {
-        return new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"));
+        return new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest")).withInitScript("static/schema.sql");
     }
 
     @Bean
