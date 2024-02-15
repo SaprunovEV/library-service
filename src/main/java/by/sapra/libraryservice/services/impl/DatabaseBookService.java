@@ -23,7 +23,7 @@ public class DatabaseBookService implements BookService {
 
     @Override
     public BookModel filterBook(ServiceFilter filter) {
-        Optional<BookEntity> optional = repository.findOne(BookSpecification.withFilter(filter));
+        Optional<BookEntity> optional = repository.findAll(BookSpecification.withFilter(filter)).stream().findFirst();
         if (optional.isEmpty()) {
             return null;
         }
