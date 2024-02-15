@@ -19,6 +19,9 @@ import by.sapra.libraryservice.web.v1.models.WebBookFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.javacrumbs.jsonunit.JsonAssert;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -29,6 +32,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -54,6 +58,13 @@ class BookControllerTest {
 
     @Value("${app.base-url}")
     private String baseUrl;
+
+    public static Stream<Arguments> getBookId() {
+        return Stream.of(
+                Arguments.arguments(0),
+                Arguments.arguments(-1)
+        );
+    }
 
     @Test
     void whenFindByFilter_thenReturnResponse() throws Exception {
@@ -176,6 +187,8 @@ class BookControllerTest {
         verify(service, times(1)).updateBook(id, book2update);
         verify(responseMapper, times(1)).bookModelToResponse(book);
     }
+
+
 
     @Test
     void whenDeleteBook_thenReturnNoContent_andCallDeleteMethod() throws Exception {
@@ -356,6 +369,45 @@ class BookControllerTest {
         String actual = response.getContentAsString();
 
         String expected = StringTestUtils.readStringFromResources("responses/v1/categoryId_validation_error_response.json");
+
+        JsonAssert.assertJsonEquals(expected, actual);
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = "getBookId")
+    void whenDeleteBookWithNoPositiveId_thenReturnError(Integer id) throws Exception {
+
+        MockHttpServletResponse response = mvc.perform(delete(baseUrl + "/{id}", id))
+                .andExpect(status().isBadRequest()).andReturn().getResponse();
+
+        setEncoding(response);
+
+        String actual = response.getContentAsString();
+
+        String expected = StringTestUtils.readStringFromResources("responses/v1/no_positive_book_id_error_response.json");
+
+        JsonAssert.assertJsonEquals(expected, actual);
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = "getBookId")
+    void whenUpdateBookWithNoPositiveId_thenReturnError(Integer id) throws Exception {
+
+        UpsertBookRequest request = UpsertBookRequestBuilder
+                .aUpsertBookRequest().build();
+
+        MockHttpServletResponse response = mvc.perform(
+                        put(baseUrl + "/{id}", id)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse();
+
+        setEncoding(response);
+
+        String actual = response.getContentAsString();
+
+        String expected = StringTestUtils.readStringFromResources("responses/v1/no_positive_book_id_error_response.json");
 
         JsonAssert.assertJsonEquals(expected, actual);
     }
