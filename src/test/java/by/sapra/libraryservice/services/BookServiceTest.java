@@ -65,12 +65,11 @@ class BookServiceTest extends AbstractDataTest {
 
     @Test
     void whenFilterBookNotFound_thenReturnModel() throws Exception {
-        TestDataBuilder<CategoryEntity> cB = getFacade().persistedOnce(aCategoryEntity());
-        BookEntity entity = aBookEntity().withCategory(cB).build();
+
 
         ServiceFilter filter = new ServiceFilter();
-        filter.setTitle(entity.getTitle());
-        filter.setAuthor(entity.getAuthor());
+        filter.setTitle("title");
+        filter.setAuthor("author");
 
         BookModel actual = service.filterBook(filter);
 
@@ -78,7 +77,7 @@ class BookServiceTest extends AbstractDataTest {
             assertNull(actual);
         });
 
-        verify(mapper, times(0)).entityToModel(eq(entity));
+        verify(mapper, times(0)).entityToModel(any());
     }
 
     @Test
