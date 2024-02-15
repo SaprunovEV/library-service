@@ -22,13 +22,10 @@ public class DatabaseBookService implements BookService {
     private final BookServiceMapper mapper;
 
     @Override
-    public BookModel filterBook(ServiceFilter filter) {
-        Optional<BookEntity> optional = repository.findAll(BookSpecification.withFilter(filter)).stream().findFirst();
-        if (optional.isEmpty()) {
-            return null;
-        }
+    public List<BookModel> filterBook(ServiceFilter filter) {
+        List<BookEntity> filteredBooks = repository.findAll(BookSpecification.withFilter(filter));
 
-        return mapper.entityToModel(optional.get());
+        return mapper.entityListToBookModelList(filteredBooks);
     }
 
     @Override
