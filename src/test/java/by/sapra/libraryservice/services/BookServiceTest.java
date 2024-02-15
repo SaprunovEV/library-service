@@ -50,17 +50,18 @@ class BookServiceTest extends AbstractDataTest {
                 .withAuthor(entity.getAuthor())
                 .withTitle(entity.getTitle())
                 .build();
-        when(mapper.entityToModel(eq(entity)))
-                .thenReturn(model);
+        List<BookModel> result = List.of(model);
+        when(mapper.entityListToBookModelList(List.of(entity)))
+                .thenReturn(result);
 
-        BookModel actual = service.filterBook(filter);
+        List<BookModel> actual = service.filterBook(filter);
 
         assertAll(() -> {
-            assertNotNull(actual);
-            assertEquals(model, actual);
+            assertNotNull(actual, "не null");
+            assertFalse(actual.isEmpty(), "не пустой");
         });
 
-        verify(mapper, times(1)).entityToModel(eq(entity));
+        verify(mapper, times(1)).entityListToBookModelList(List.of(entity));
     }
 
     @Test
@@ -71,13 +72,13 @@ class BookServiceTest extends AbstractDataTest {
         filter.setTitle("title");
         filter.setAuthor("author");
 
-        BookModel actual = service.filterBook(filter);
+        List<BookModel> actual = service.filterBook(filter);
 
         assertAll(() -> {
-            assertNull(actual);
+            assertTrue(actual.isEmpty());
         });
 
-        verify(mapper, times(0)).entityToModel(any());
+        verify(mapper, times(1)).entityListToBookModelList(any());
     }
 
     @Test

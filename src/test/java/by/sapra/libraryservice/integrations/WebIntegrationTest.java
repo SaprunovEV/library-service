@@ -70,7 +70,7 @@ public class WebIntegrationTest extends AbstractDataTest {
 
         String expected = StringTestUtils.readStringFromResources("/responses/v1/find_by_filter_1_response.json");
 
-        JsonAssert.assertJsonEquals(expected, actual, JsonAssert.whenIgnoringPaths("id", "categoryId"));
+        JsonAssert.assertJsonEquals(expected, actual, JsonAssert.whenIgnoringPaths("books[0].id", "books[0].categoryId"));
     }
 
     @Test

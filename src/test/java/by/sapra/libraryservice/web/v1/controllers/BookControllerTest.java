@@ -66,12 +66,18 @@ class BookControllerTest {
         serviceFilter.setTitle(filter.getTitle());
         when(webMapper.webFilterToServiceFilter(filter)).thenReturn(serviceFilter);
 
-        BookModel book = createBookModel(filter);
-        when(service.filterBook(serviceFilter)).thenReturn(book);
+        List<BookModel> modelList = List.of(
+                BookModelBuilder.aBook().withId(1).build(),
+                BookModelBuilder.aBook().withId(2).build(),
+                BookModelBuilder.aBook().withId(3).build(),
+                BookModelBuilder.aBook().withId(4).build()
+        );
+        when(service.filterBook(serviceFilter)).thenReturn(modelList);
 
 
-        BookResponse response = createBookResponse(filter);
-        when(responseMapper.bookModelToResponse(book)).thenReturn(response);
+        BookListResponse listResponse = ListBookResponseBuilder.aListBookResponse().build();
+        when(responseMapper.bookModelListToListResponse(modelList))
+                .thenReturn(listResponse);
 
         mvc.perform(
                         get(baseUrl)
@@ -83,7 +89,7 @@ class BookControllerTest {
 
         verify(webMapper, times(1)).webFilterToServiceFilter(filter);
         verify(service, times(1)).filterBook(serviceFilter);
-        verify(responseMapper, times(1)).bookModelToResponse(book);
+        verify(responseMapper, times(1)).bookModelListToListResponse(modelList);
     }
 
     @Test
