@@ -1,8 +1,11 @@
 package by.sapra.libraryservice.web.v1.controllers;
 
 import by.sapra.libraryservice.services.BookService;
+import by.sapra.libraryservice.services.exceptions.BookNotFoundException;
+import by.sapra.libraryservice.services.exceptions.CategoryNotFoundException;
 import by.sapra.libraryservice.services.model.BookModel;
 import by.sapra.libraryservice.services.model.ServiceFilter;
+import by.sapra.libraryservice.testUtils.StringTestUtils;
 import by.sapra.libraryservice.testUtils.UpsertBookRequestBuilder;
 import by.sapra.libraryservice.testUtils.builders.service.BookModelBuilder;
 import by.sapra.libraryservice.testUtils.builders.web.v1.BookResponseBuilder;
@@ -14,12 +17,14 @@ import by.sapra.libraryservice.web.v1.models.BookResponse;
 import by.sapra.libraryservice.web.v1.models.UpsertBookRequest;
 import by.sapra.libraryservice.web.v1.models.WebBookFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.javacrumbs.jsonunit.JsonAssert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -174,6 +179,50 @@ class BookControllerTest {
                 .andExpect(status().isNoContent());
 
         verify(service, times(1)).deleteBook(id);
+    }
+
+    @Test
+    void whenCategoryNotFound_thenReturnError() throws Exception {
+        String testName = "test_category";
+
+        when(service.getBookByCategory(testName)).thenThrow(new CategoryNotFoundException("Тестовое сообщение об ошибке поиска категории!"));
+
+        MockHttpServletResponse response = mvc.perform(get(baseUrl + "/{name}", testName))
+                .andExpect(status().isNotFound())
+                .andReturn().getResponse();
+
+        response.setCharacterEncoding("UTF-8");
+
+        String actual = response.getContentAsString();
+
+        String expected = StringTestUtils.readStringFromResources("responses/v1/category_not_found_error_response.json");
+
+        JsonAssert.assertJsonEquals(expected, actual);
+    }
+
+    @Test
+    void whenBookNotFound_thenReturnError() throws Exception {
+        WebBookFilter filter = new WebBookFilter();
+        filter.setAuthor("test_title");
+        filter.setTitle("test_author");
+
+        when(webMapper.webFilterToServiceFilter(filter))
+                .thenThrow(new BookNotFoundException("Тестовое сообщение о не найденной книге"));
+
+        MockHttpServletResponse response = mvc.perform(
+                        get(baseUrl)
+                                .param("title", filter.getTitle())
+                                .param("author", filter.getAuthor()))
+                .andExpect(status().isNotFound())
+                .andReturn().getResponse();
+
+        response.setCharacterEncoding("UTF-8");
+
+        String actual = response.getContentAsString();
+
+        String expected = StringTestUtils.readStringFromResources("responses/v1/book_not_found_error_repsonse.json");
+
+        JsonAssert.assertJsonEquals(expected, actual);
     }
 
     private static void assertNotNullAndNotEmptyResponse(String actual) {
