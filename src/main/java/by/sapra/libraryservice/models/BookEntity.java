@@ -21,7 +21,9 @@ public class BookEntity {
     private String title;
     private String author;
 
-    @ManyToOne(targetEntity = CategoryEntity.class)
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    @ToString.Exclude
     private CategoryEntity categoryEntity;
 
     @Override

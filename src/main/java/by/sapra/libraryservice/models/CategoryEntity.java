@@ -1,7 +1,10 @@
 package by.sapra.libraryservice.models;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import java.util.List;
@@ -20,7 +23,7 @@ public class CategoryEntity {
 
     private String name;
 
-    @OneToMany
+    @OneToMany(mappedBy = "categoryEntity", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<BookEntity> books;
 
