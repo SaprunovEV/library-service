@@ -46,7 +46,7 @@ public class DatabaseBookService implements BookService {
     public BookModel updateBook(Integer id, BookModel book2update) {
         Optional<BookEntity> bookOptional = repository.findById(id);
         if (bookOptional.isEmpty()) {
-            throw new BookNotFoundException();
+            throw new BookNotFoundException("Книга с Id: " + id + " не найдена!");
         }
 
         BookEntity entity2update = mapper.modelToEntity(book2update);
