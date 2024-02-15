@@ -4,13 +4,13 @@
       "id": 1,
       "title": "test_title_1",
       "author": "test_author_1",
-      "category": "test_category"
+      "categoryId": 1
     },
     {
       "id": 2,
       "title": "test_title_2",
       "author": "test_author_2",
-      "category": "test_category"
+      "categoryId": 1
     }
   ]
 }

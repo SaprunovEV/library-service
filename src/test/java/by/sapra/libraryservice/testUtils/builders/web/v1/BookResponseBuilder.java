@@ -7,9 +7,9 @@ public class BookResponseBuilder implements TestDataBuilder<BookResponse> {
     private Integer id = 1;
     private String author = "test_author";
     private String title = "test_title";
-    private String category = "test_category";
+    private Integer category = 1;
 
-    private BookResponseBuilder(Integer id, String author, String title, String category) {
+    private BookResponseBuilder(Integer id, String author, String title, Integer category) {
         this.id = id;
         this.author = author;
         this.title = title;
@@ -30,7 +30,7 @@ public class BookResponseBuilder implements TestDataBuilder<BookResponse> {
         return this.title == title ? this : new BookResponseBuilder(id, author, title, category);
     }
 
-    public BookResponseBuilder withCategory(String category) {
+    public BookResponseBuilder withCategory(Integer category) {
         return this.category == category ? this : new BookResponseBuilder(id, author, title, category);
     }
 
@@ -44,7 +44,7 @@ public class BookResponseBuilder implements TestDataBuilder<BookResponse> {
         result.setId(id);
         result.setAuthor(author);
         result.setTitle(title);
-        result.setCategory(category);
+        result.setCategoryId(category);
         return result;
     }
 }

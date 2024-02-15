@@ -1,5 +1,6 @@
 package by.sapra.libraryservice.web.v1.models;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
