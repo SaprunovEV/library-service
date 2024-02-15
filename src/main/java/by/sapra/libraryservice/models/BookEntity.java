@@ -21,7 +21,7 @@ public class BookEntity {
     private String title;
     private String author;
 
-    @ManyToOne
+    @ManyToOne(targetEntity = CategoryEntity.class)
     private CategoryEntity categoryEntity;
 
     @Override
