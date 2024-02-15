@@ -1,5 +1,6 @@
 package by.sapra.libraryservice.integrations;
 
+import by.sapra.libraryservice.config.AbstractDataTest;
 import by.sapra.libraryservice.testUtils.StringTestUtils;
 import by.sapra.libraryservice.testUtils.UpsertBookRequestBuilder;
 import by.sapra.libraryservice.web.v1.models.UpsertBookRequest;
@@ -8,17 +9,33 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.javacrumbs.jsonunit.JsonAssert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.core.AutoConfigureCache;
+import org.springframework.boot.test.autoconfigure.filter.TypeExcludeFilters;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTypeExcludeFilter;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@TypeExcludeFilters(DataJpaTypeExcludeFilter.class)
+@Transactional
+@AutoConfigureCache
+@AutoConfigureDataJpa
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureTestEntityManager
+@ImportAutoConfiguration
 @AutoConfigureMockMvc
-public class WebIntegrationTest {
+public class WebIntegrationTest extends AbstractDataTest {
+
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
