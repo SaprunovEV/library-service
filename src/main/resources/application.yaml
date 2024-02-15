@@ -10,3 +10,8 @@ spring:
     username: ${POSTGRES_USER:postgres}
     password: ${POSTGRES_PASSWORD:postgres}
     url: jdbc:postgresql://localhost:5432/library_db
+
+
+server:
+  port: 8080
+  host: http://localhost
