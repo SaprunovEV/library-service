@@ -7,6 +7,7 @@ import by.sapra.libraryservice.web.v1.models.CategoryName;
 import by.sapra.libraryservice.web.v1.models.BookId;
 import by.sapra.libraryservice.web.v1.models.UpsertBookRequest;
 import by.sapra.libraryservice.web.v1.models.WebBookFilter;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class BookController {
     private final WebFilterMapper filterMapper;
     private final BookResponseMapper responseMapper;
     @GetMapping
-    public ResponseEntity<?> getBookByAuthorAndTitle(WebBookFilter filter) {
+    public ResponseEntity<?> getBookByAuthorAndTitle(@Valid WebBookFilter filter) {
         return ResponseEntity.ok(
                 responseMapper.bookModelToResponse(
                         service.filterBook(
@@ -38,7 +39,7 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createNewBook(@RequestBody UpsertBookRequest request) {
+    public ResponseEntity<?> createNewBook(@RequestBody @Valid UpsertBookRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 responseMapper.bookModelToResponse(
                         service.createBook(

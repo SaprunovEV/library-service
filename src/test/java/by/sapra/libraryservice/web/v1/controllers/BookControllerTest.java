@@ -191,7 +191,7 @@ class BookControllerTest {
                 .andExpect(status().isNotFound())
                 .andReturn().getResponse();
 
-        response.setCharacterEncoding("UTF-8");
+        setEncoding(response);
 
         String actual = response.getContentAsString();
 
@@ -216,13 +216,80 @@ class BookControllerTest {
                 .andExpect(status().isNotFound())
                 .andReturn().getResponse();
 
-        response.setCharacterEncoding("UTF-8");
+        setEncoding(response);
 
         String actual = response.getContentAsString();
 
         String expected = StringTestUtils.readStringFromResources("responses/v1/book_not_found_error_repsonse.json");
 
         JsonAssert.assertJsonEquals(expected, actual);
+    }
+
+    @Test
+    void whenCreateBookWithoutAuthor_thenReturnError() throws Exception {
+        UpsertBookRequest request = UpsertBookRequestBuilder
+                .aUpsertBookRequest().withAuthor("").build();
+
+        MockHttpServletResponse response = mvc.perform(
+                        post(baseUrl)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse();
+
+        setEncoding(response);
+
+        String actual = response.getContentAsString();
+
+        String expected = StringTestUtils.readStringFromResources("responses/v1/author_validation_error_response.json");
+
+        JsonAssert.assertJsonEquals(expected, actual);
+    }
+
+    @Test
+    void whenCreateBookWithoutTitle_thenReturnError() throws Exception {
+        UpsertBookRequest request = UpsertBookRequestBuilder
+                .aUpsertBookRequest().withTitle("").build();
+
+        MockHttpServletResponse response = mvc.perform(
+                        post(baseUrl)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse();
+
+        setEncoding(response);
+
+        String actual = response.getContentAsString();
+
+        String expected = StringTestUtils.readStringFromResources("responses/v1/title_validation_error_response.json");
+
+        JsonAssert.assertJsonEquals(expected, actual);
+    }
+
+    @Test
+    void whenCreateBookWithNotCorrectCategoryId_thenReturnError() throws Exception {
+        UpsertBookRequest request = UpsertBookRequestBuilder
+                .aUpsertBookRequest().withCategoryId(-2).build();
+
+        MockHttpServletResponse response = mvc.perform(
+                        post(baseUrl)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse();
+
+        setEncoding(response);
+
+        String actual = response.getContentAsString();
+
+        String expected = StringTestUtils.readStringFromResources("responses/v1/categoryId_validation_error_response.json");
+
+        JsonAssert.assertJsonEquals(expected, actual);
+    }
+
+    private static void setEncoding(MockHttpServletResponse response) {
+        response.setCharacterEncoding("UTF-8");
     }
 
     private static void assertNotNullAndNotEmptyResponse(String actual) {
