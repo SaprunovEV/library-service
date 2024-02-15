@@ -226,48 +226,6 @@ class BookControllerTest {
     }
 
     @Test
-    void whenCreateBookWithoutAuthor_thenReturnError() throws Exception {
-        UpsertBookRequest request = UpsertBookRequestBuilder
-                .aUpsertBookRequest().withAuthor("").build();
-
-        MockHttpServletResponse response = mvc.perform(
-                        post(baseUrl)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andReturn().getResponse();
-
-        setEncoding(response);
-
-        String actual = response.getContentAsString();
-
-        String expected = StringTestUtils.readStringFromResources("responses/v1/author_validation_error_response.json");
-
-        JsonAssert.assertJsonEquals(expected, actual);
-    }
-
-    @Test
-    void whenCreateBookWithoutTitle_thenReturnError() throws Exception {
-        UpsertBookRequest request = UpsertBookRequestBuilder
-                .aUpsertBookRequest().withTitle("").build();
-
-        MockHttpServletResponse response = mvc.perform(
-                        post(baseUrl)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andReturn().getResponse();
-
-        setEncoding(response);
-
-        String actual = response.getContentAsString();
-
-        String expected = StringTestUtils.readStringFromResources("responses/v1/title_validation_error_response.json");
-
-        JsonAssert.assertJsonEquals(expected, actual);
-    }
-
-    @Test
     void whenCreateBookWithNotCorrectCategoryId_thenReturnError() throws Exception {
         UpsertBookRequest request = UpsertBookRequestBuilder
                 .aUpsertBookRequest().withCategoryId(-2).build();

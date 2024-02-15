@@ -5,8 +5,6 @@ import lombok.Data;
 
 @Data
 public class WebBookFilter {
-    @NotBlank(message = "Поле автора не должно быть пустым!")
     private String author;
-    @NotBlank(message = "Поле титула не должно быть пустым!")
     private String title;
 }

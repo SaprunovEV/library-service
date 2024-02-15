@@ -21,7 +21,7 @@ public class BookController {
     private final WebFilterMapper filterMapper;
     private final BookResponseMapper responseMapper;
     @GetMapping
-    public ResponseEntity<?> getBookByAuthorAndTitle(@Valid WebBookFilter filter) {
+    public ResponseEntity<?> getBookByAuthorAndTitle(WebBookFilter filter) {
         return ResponseEntity.ok(
                 responseMapper.bookModelToResponse(
                         service.filterBook(
@@ -50,7 +50,7 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateBook(BookId id, @RequestBody UpsertBookRequest request) {
+    public ResponseEntity<?> updateBook(BookId id, @RequestBody @Valid UpsertBookRequest request) {
         return ResponseEntity.ok(
                 responseMapper.bookModelToResponse(
                         service.updateBook(id.getId(), responseMapper.requestToBookModel(request))));
