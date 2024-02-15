@@ -1,6 +1,10 @@
 {
-  "id": 1,
-  "title": "test_title",
-  "author": "test_author",
-  "categoryId": 1
+  "books": [
+    {
+      "id": 1,
+      "title": "test_title",
+      "author": "test_author",
+      "categoryId": 1
+    }
+  ]
 }
