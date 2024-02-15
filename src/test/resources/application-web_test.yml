@@ -1,0 +1,2 @@
+app:
+  base-url: /api/v1/book
