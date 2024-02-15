@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ContextConfiguration(classes = CategoryServiceMapperConfig.class)
+@ContextConfiguration(classes = ServiceMappersTestConfig.class)
 class CategoryServiceMapperTest extends AbstractDataTest {
     @Autowired
     CategoryServiceMapper mapper;
