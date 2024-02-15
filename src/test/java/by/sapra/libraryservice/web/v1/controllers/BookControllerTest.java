@@ -288,6 +288,72 @@ class BookControllerTest {
         JsonAssert.assertJsonEquals(expected, actual);
     }
 
+    @Test
+    void whenUpdateBookWithoutAuthor_thenReturnError() throws Exception {
+        UpsertBookRequest request = UpsertBookRequestBuilder
+                .aUpsertBookRequest().withAuthor("").build();
+
+        Integer id = 1;
+        MockHttpServletResponse response = mvc.perform(
+                        put(baseUrl + "/{id}", id)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse();
+
+        setEncoding(response);
+
+        String actual = response.getContentAsString();
+
+        String expected = StringTestUtils.readStringFromResources("responses/v1/author_validation_error_response.json");
+
+        JsonAssert.assertJsonEquals(expected, actual);
+    }
+
+    @Test
+    void whenUpdateBookWithoutTitle_thenReturnError() throws Exception {
+        UpsertBookRequest request = UpsertBookRequestBuilder
+                .aUpsertBookRequest().withTitle("").build();
+
+        Integer id = 1;
+        MockHttpServletResponse response = mvc.perform(
+                        put(baseUrl + "/{id}", id)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse();
+
+        setEncoding(response);
+
+        String actual = response.getContentAsString();
+
+        String expected = StringTestUtils.readStringFromResources("responses/v1/title_validation_error_response.json");
+
+        JsonAssert.assertJsonEquals(expected, actual);
+    }
+
+    @Test
+    void whenUpdateBookWithNotCorrectCategoryId_thenReturnError() throws Exception {
+        UpsertBookRequest request = UpsertBookRequestBuilder
+                .aUpsertBookRequest().withCategoryId(-2).build();
+
+        Integer id = 1;
+        MockHttpServletResponse response = mvc.perform(
+                        put(baseUrl + "/{id}", id)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse();
+
+        setEncoding(response);
+
+        String actual = response.getContentAsString();
+
+        String expected = StringTestUtils.readStringFromResources("responses/v1/categoryId_validation_error_response.json");
+
+        JsonAssert.assertJsonEquals(expected, actual);
+    }
+
     private static void setEncoding(MockHttpServletResponse response) {
         response.setCharacterEncoding("UTF-8");
     }
