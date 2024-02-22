@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = CacheServiceConf.class)
+@ContextConfiguration(classes = BookServiceCacheRedisConf.class)
 @Testcontainers
 public class CacheServiceTest {
 
