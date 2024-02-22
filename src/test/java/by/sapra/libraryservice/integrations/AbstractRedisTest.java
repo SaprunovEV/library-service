@@ -14,7 +14,7 @@ import java.util.List;
 
 @Testcontainers
 @ContextConfiguration(classes = CacheRedisConfig.class)
-public class AbstractRedisTest {
+public abstract class AbstractRedisTest {
     @Autowired
     protected RedisTemplate<String, Object> redisTemplate;
 
