@@ -11,5 +11,5 @@ import org.springframework.context.annotation.Import;
 @ImportAutoConfiguration
 @EnableConfigurationProperties(RedisProperties.class)
 @Import(value = RedisConfig.class)
-public class AbstractCacheRedisConfig  extends AbstractCacheConfig {
+public class CacheRedisConfig extends AbstractCacheConfig {
 }
