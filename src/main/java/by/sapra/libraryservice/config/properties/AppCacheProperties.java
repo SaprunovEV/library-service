@@ -13,7 +13,7 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "app.cache")
 public class AppCacheProperties {
 
-    private List<String> cacheNames = new ArrayList<>();
+    private final List<String> cacheNames = new ArrayList<>();
     private final Map<String, CacheProperties> caches = new HashMap<>();
     private CacheType cacheType;
 
@@ -23,7 +23,8 @@ public class AppCacheProperties {
     }
 
     public interface CacheNames {
-
+        String BOOKS_BY_CATEGORY_NAME = "bookByCategoryName";
+        String BOOKS_BY_AUTHOR_AND_TITLE = "booksByAuthorAndTitle";
     }
 
     public enum CacheType {
