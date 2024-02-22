@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 
 @TestConfiguration
 @MockBean(value = BookRepository.class)
-public class BookServiceCacheRedisConf extends AbstractCacheRedisConfig {
+public class BookServiceCacheRedisConf {
 
     @Bean
     public BookServiceMapper mapper() {
