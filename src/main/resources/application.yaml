@@ -20,7 +20,14 @@ app:
     enable: true
   cache:
     cacheType: redis
-    
+    cache-names:
+      - bookByCategoryName
+      - booksByAuthorAndTitle
+    caches:
+      bookByCategoryName:
+        expire: 10m
+      booksByAuthorAndTitle:
+        expire: 10m
 
 server:
   port: 8080
