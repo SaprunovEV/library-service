@@ -133,4 +133,25 @@ public class CacheServiceTest extends AbstractRedisTest {
 
         verify(mockService, times(0)).filterBook(filter);
     }
+
+    @Test
+    void whenDeleteBook_thenClearCache() throws Exception {
+        String author = "test_author";
+        String title = "test_title";
+
+        String testCategoryName = "category";
+
+        redisTemplate.opsForValue().set(AppCacheProperties.CacheNames.BOOKS_BY_CATEGORY_NAME + "::" + testCategoryName, List.of(aBook().build()));
+
+        redisTemplate.opsForValue()
+                .set(
+                        AppCacheProperties.CacheNames.BOOKS_BY_AUTHOR_AND_TITLE + "::" + author + title,
+                        List.of(aBook().withAuthor(author).withTitle(title).withId(1).withCategoryId(1).build()));
+
+        bookService.deleteBook(1);
+
+        assertTrue(Objects.requireNonNull(redisTemplate.keys("*")).isEmpty());
+
+        verify(mockService, times(1)).deleteBook(1);
+    }
 }

@@ -6,7 +6,9 @@ import by.sapra.libraryservice.services.model.BookModel;
 import by.sapra.libraryservice.services.model.ServiceFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +45,10 @@ public class CacheBookServiceDecorator implements BookService {
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = AppCacheProperties.CacheNames.BOOKS_BY_AUTHOR_AND_TITLE, allEntries = true),
+            @CacheEvict(value = AppCacheProperties.CacheNames.BOOKS_BY_CATEGORY_NAME, allEntries = true)
+    })
     public void deleteBook(Integer id) {
         delegate.deleteBook(id);
     }
