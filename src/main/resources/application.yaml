@@ -1,4 +1,8 @@
 spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
   jpa:
     generate-ddl: true
     open-in-view: false
@@ -11,6 +15,19 @@ spring:
     password: ${POSTGRES_PASSWORD:postgres}
     url: jdbc:postgresql://localhost:5432/library_db
 
+app:
+  redis:
+    enable: true
+  cache:
+    cacheType: redis
+    cache-names:
+      - bookByCategoryName
+      - booksByAuthorAndTitle
+    caches:
+      bookByCategoryName:
+        expire: 10m
+      booksByAuthorAndTitle:
+        expire: 10m
 
 server:
   port: 8080
