@@ -1,26 +1,24 @@
 package by.sapra.libraryservice.integrations;
 
-import by.sapra.libraryservice.repository.BookRepository;
 import by.sapra.libraryservice.services.BookService;
-import by.sapra.libraryservice.services.impl.DatabaseBookService;
-import by.sapra.libraryservice.services.mappers.BookServiceMapper;
+import by.sapra.libraryservice.services.impl.CacheBookServiceDecorator;
+import by.sapra.libraryservice.services.impl.NotCachedBookServiceQualifier;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 
 @TestConfiguration
-@MockBean(value = BookRepository.class)
 public class BookServiceCacheRedisConf {
 
     @Bean
-    public BookServiceMapper mapper() {
-        return Mockito.mock(BookServiceMapper.class);
+    @NotCachedBookServiceQualifier
+    public BookService notCacheBook() {
+        return Mockito.mock(BookService.class);
     }
 
 
     @Bean
-    public BookService bookService(BookRepository repo, BookServiceMapper mapper) {
-        return new DatabaseBookService(repo, mapper);
+    public BookService bookService(BookService bs) {
+        return new CacheBookServiceDecorator(bs);
     }
 }
