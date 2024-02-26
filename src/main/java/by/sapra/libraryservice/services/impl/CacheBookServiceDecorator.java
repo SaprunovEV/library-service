@@ -35,6 +35,10 @@ public class CacheBookServiceDecorator implements BookService {
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = AppCacheProperties.CacheNames.BOOKS_BY_CATEGORY_NAME, allEntries = true),
+            @CacheEvict(value = AppCacheProperties.CacheNames.BOOKS_BY_AUTHOR_AND_TITLE, allEntries = true)
+    })
     public BookModel createBook(BookModel book2save) {
         return delegate.createBook(book2save);
     }
