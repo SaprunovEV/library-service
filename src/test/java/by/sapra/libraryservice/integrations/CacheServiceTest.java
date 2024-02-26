@@ -4,9 +4,10 @@ import by.sapra.libraryservice.config.properties.AppCacheProperties;
 import by.sapra.libraryservice.services.BookService;
 import by.sapra.libraryservice.services.impl.NotCachedBookServiceQualifier;
 import by.sapra.libraryservice.services.model.BookModel;
-import by.sapra.libraryservice.testUtils.builders.service.BookModelBuilder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -15,8 +16,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import static by.sapra.libraryservice.testUtils.builders.service.BookModelBuilder.aBook;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = BookServiceCacheRedisConf.class)
@@ -29,9 +31,14 @@ public class CacheServiceTest extends AbstractRedisTest {
     @Autowired
     private BookService bookService;
 
+    @BeforeEach
+    void setUp() {
+        Mockito.reset(mockService);
+    }
+
     @Test
     void shouldCorrectConfigureTest() throws Exception {
-        redisTemplate.opsForList().rightPush("key", BookModelBuilder.aBook().build());
+        redisTemplate.opsForList().rightPush("key", aBook().build());
 
         Set<String> keys = redisTemplate.keys("*");
 
@@ -63,5 +70,19 @@ public class CacheServiceTest extends AbstractRedisTest {
                         .get(AppCacheProperties.CacheNames.BOOKS_BY_CATEGORY_NAME + "::" + testCategoryName))
                         .size(),
                 "после выполнения теста должна быть запись в кеш!");
+    }
+
+    @Test
+    void whenFindByCategory_andCacheHaveTheKey_thenNotCallDelegateMethod() throws Exception {
+        String testCategoryName = "category";
+
+        redisTemplate.opsForValue().set(AppCacheProperties.CacheNames.BOOKS_BY_CATEGORY_NAME + "::" + testCategoryName, List.of(aBook().build()));
+
+        List<BookModel> actual = bookService.getBookByCategory(testCategoryName);
+
+        assertFalse(actual.isEmpty());
+        assertEquals(1, actual.size());
+
+        verify(mockService, times(0)).getBookByCategory(testCategoryName);
     }
 }
