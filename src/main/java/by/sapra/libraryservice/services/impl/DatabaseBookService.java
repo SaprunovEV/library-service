@@ -17,6 +17,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@NotCachedBookServiceQualifier
 public class DatabaseBookService implements BookService {
     private final BookRepository repository;
     private final BookServiceMapper mapper;
