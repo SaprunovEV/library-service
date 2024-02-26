@@ -4,6 +4,7 @@ import by.sapra.libraryservice.config.properties.AppCacheProperties;
 import by.sapra.libraryservice.services.BookService;
 import by.sapra.libraryservice.services.impl.NotCachedBookServiceQualifier;
 import by.sapra.libraryservice.services.model.BookModel;
+import by.sapra.libraryservice.services.model.ServiceFilter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,6 +35,7 @@ public class CacheServiceTest extends AbstractRedisTest {
     @BeforeEach
     void setUp() {
         Mockito.reset(mockService);
+        redisTemplate.delete(Objects.requireNonNull(redisTemplate.keys("*")));
     }
 
     @Test
@@ -84,5 +86,51 @@ public class CacheServiceTest extends AbstractRedisTest {
         assertEquals(1, actual.size());
 
         verify(mockService, times(0)).getBookByCategory(testCategoryName);
+    }
+
+    @Test
+    void whenFilteredBook_thenPushToCache() throws Exception {
+        String author = "test_author";
+        String title = "test_title";
+
+        ServiceFilter filter = new ServiceFilter();
+        filter.setTitle(title);
+        filter.setAuthor(author);
+
+        assertTrue(Objects.requireNonNull(redisTemplate.keys("*")).isEmpty());
+
+        List<BookModel> expected = List.of(aBook().withId(1).withAuthor(author).withTitle(title).withCategoryId(1).build());
+        when(mockService.filterBook(filter)).thenReturn(expected);
+
+        bookService.filterBook(filter);
+
+        assertFalse(
+                (List.of(
+                        redisTemplate.opsForValue().get(AppCacheProperties.CacheNames.BOOKS_BY_AUTHOR_AND_TITLE + "::" + author + title))
+                ).isEmpty());
+    }
+
+    @Test
+    void whenFilteredBook_andCacheHaveTheKey_thenNotCallServiceMethod() throws Exception {
+        String author = "test_author";
+        String title = "test_title";
+
+        ServiceFilter filter = new ServiceFilter();
+        filter.setTitle(title);
+        filter.setAuthor(author);
+
+        redisTemplate.opsForValue()
+                .set(
+                        AppCacheProperties.CacheNames.BOOKS_BY_AUTHOR_AND_TITLE + "::" + author + title,
+                        List.of(aBook().withAuthor(author).withTitle(title).withId(1).withCategoryId(1).build()));
+
+        List<BookModel> actual = bookService.filterBook(filter);
+
+        assertAll(() -> {
+            assertNotNull(actual);
+            assertEquals(1, actual.size());
+        });
+
+        verify(mockService, times(0)).filterBook(filter);
     }
 }

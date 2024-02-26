@@ -21,6 +21,7 @@ public class CacheBookServiceDecorator implements BookService {
     private final BookService delegate;
 
     @Override
+    @Cacheable(value = AppCacheProperties.CacheNames.BOOKS_BY_AUTHOR_AND_TITLE, key = "#filter.author + #filter.title")
     public List<BookModel> filterBook(ServiceFilter filter) {
         return delegate.filterBook(filter);
     }
