@@ -44,6 +44,7 @@ public class CacheBookServiceDecorator implements BookService {
     }
 
     @Override
+    @CacheEvict(value = AppCacheProperties.CacheNames.BOOKS_BY_AUTHOR_AND_TITLE, allEntries = true)
     public BookModel updateBook(Integer id, BookModel book2update) {
         return delegate.updateBook(id, book2update);
     }
