@@ -5,6 +5,7 @@ import by.sapra.libraryservice.services.BookService;
 import by.sapra.libraryservice.services.model.BookModel;
 import by.sapra.libraryservice.services.model.ServiceFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -18,6 +19,7 @@ import java.util.List;
 @Primary
 @CacheConfig(cacheManager = "redisCacheManager")
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "app.redis", name = "enable", havingValue = "true")
 public class CacheBookServiceDecorator implements BookService {
     @NotCachedBookServiceQualifier
     private final BookService delegate;

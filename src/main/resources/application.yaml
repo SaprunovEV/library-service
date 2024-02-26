@@ -17,7 +17,7 @@ spring:
 
 app:
   redis:
-    enable: true
+    enable: ${APP_CACHE_ENABLE:true}
   cache:
     cacheType: redis
     cache-names:
@@ -25,9 +25,9 @@ app:
       - booksByAuthorAndTitle
     caches:
       bookByCategoryName:
-        expire: 10m
+        expire: ${CACHE_BY_CATEGORY_NAME_EXPIRE:10m}
       booksByAuthorAndTitle:
-        expire: 10m
+        expire: ${CACHE_BY_AUTHOR_AND_TITLE_EXPIRE:10m}
 
 server:
   port: 8080
