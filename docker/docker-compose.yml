@@ -29,6 +29,7 @@ services:
     environment:
       - DATA_BASE_HOST=database
       - REDIS_HOST=redis_host
+      - APP_CACHE_ENABLE=${CACHE:-true}
     depends_on:
         - redis
         - postgres-ql
