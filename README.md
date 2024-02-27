@@ -15,6 +15,7 @@
 4. [Настройка приложения](#properties)
 5. [Запуск приложения](#bootstrup)
 6. [Документация](#dock)
+7. [Завершение работы](#shutdown)
 
 ## <a id="start"> Как начать работу с приложением</a>
 
@@ -83,3 +84,10 @@ docker-compose --env-file ./docker/config/.env.dev -f docker/docker-compose.yml 
 ## <a id="dock">Документация</a>
 
 Документация выполнена с помощью OpenAPI и доступна, при запущенном приложении, по <a href="http://localhost:8080/swagger-ui/index.html">ссылке</a>
+
+## <a id="shutdown">Завершение работы</a>
+
+Для завершения презентационной работы приложения необходимо ввести команду:
+```shell
+docker compose -f docker/docker-compose.iml down
+```
