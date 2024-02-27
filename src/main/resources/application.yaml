@@ -1,8 +1,8 @@
 spring:
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST:localhost }
+      port: ${REDIS_PORT:6379}
   jpa:
     generate-ddl: true
     open-in-view: false
@@ -13,7 +13,7 @@ spring:
       connection-timeout: 10000
     username: ${POSTGRES_USER:postgres}
     password: ${POSTGRES_PASSWORD:postgres}
-    url: jdbc:postgresql://localhost:5432/library_db
+    url: jdbc:postgresql://${DATA_BASE_HOST:localhost}:${DATA_BASE_PORT:5432}/library_db
 
 app:
   redis:

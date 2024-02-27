@@ -8,9 +8,33 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=library_db
+    networks:
+      backend:
+        aliases:
+            - "database"
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
   redis:
     image: redis:7.0.12
     ports:
       - "6379:6379"
+    networks:
+      backend:
+        aliases:
+          - "redis_host"
+  app:
+    image: library-app:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - DATA_BASE_HOST=database
+      - REDIS_HOST=redis_host
+      - APP_CACHE_ENABLE=${CACHE:-true}
+    depends_on:
+        - redis
+        - postgres-ql
+    networks:
+      - backend
+networks:
+  backend:
+    driver: bridge
