@@ -14,6 +14,7 @@
 3. [Установка приложения](#install)
 4. [Настройка приложения](#properties)
 5. [Запуск приложения](#bootstrup)
+6. [Документация](#dock)
 
 ## <a id="start"> Как начать работу с приложением</a>
 
@@ -78,3 +79,7 @@ docker-compose -f docker/docker-compose.yml up
 ```shell
 docker-compose --env-file ./docker/config/.env.dev -f docker/docker-compose.yml up
 ```
+
+## <a id="dock">Документация</a>
+
+Документация выполнена с помощью OpenAPI и доступна, при запущенном приложении, по <a href="http://localhost:8080/swagger-ui/index.html">ссылке</a>
